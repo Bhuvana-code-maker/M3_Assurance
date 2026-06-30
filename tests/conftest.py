@@ -1,7 +1,6 @@
 """pytest conftest — session-scoped real Postgres + Redis fixtures. No mocks."""
 
 import json
-import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
 from typing import Any
@@ -16,14 +15,13 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from apps.shared.cache import build_redis
 from apps.shared.db import build_engine, build_session_factory
+from apps.shared.settings import Settings
 
 _FIXTURES = Path(__file__).parent / "fixtures"
 
-_TEST_DB_URL = os.environ.get(
-    "DATABASE_TEST_URL",
-    "postgresql+asyncpg://assurance:assurance@localhost:5432/assurance_test",
-)
-_REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+_settings = Settings()
+_TEST_DB_URL = _settings.database_test_url
+_REDIS_URL = _settings.redis_url
 
 
 @pytest.fixture(scope="session")
