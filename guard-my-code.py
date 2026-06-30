@@ -5,9 +5,12 @@ Usage: python guard-my-code.py
   OR : uv run python guard-my-code.py
 """
 
+import os
 import shutil
 import subprocess
 import sys
+
+from apps.shared.settings import Settings
 
 
 def _run(cmd: list[str], *, check: bool = True, **kw) -> int:
@@ -94,9 +97,6 @@ def _audit_deps() -> None:
 
 
 def _migrate_test_db() -> None:
-    import os
-    from apps.shared.settings import Settings
-
     settings = Settings()
     test_db_url = settings.database_test_url
     print("\n🗃️ Running migrations on test DB...")
