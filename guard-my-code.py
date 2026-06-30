@@ -93,6 +93,17 @@ def _audit_deps() -> None:
     _step("🔎 Auditing dependencies for CVEs...", ["uv", "run", "pip-audit", "."])
 
 
+def _migrate_test_db() -> None:
+    import os
+    from apps.shared.settings import Settings
+
+    settings = Settings()
+    test_db_url = settings.database_test_url
+    print("\n🗃️ Running migrations on test DB...")
+    env = {**os.environ, "DATABASE_URL": test_db_url}
+    _run(["uv", "run", "alembic", "upgrade", "head"], env=env)
+
+
 def _tests() -> None:
     _step(
         "🧪 Running tests (real Postgres + Redis — no mocks)...",
@@ -119,6 +130,7 @@ def main() -> None:
     _security()
     _secrets()
     _audit_deps()
+    _migrate_test_db()
     _tests()
     print("\n✅  All guards passed — safe to push.\n")
 
