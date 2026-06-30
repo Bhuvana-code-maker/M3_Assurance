@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent
+_USE_SUDO_FOR_DOCKER = False
 
 
 def _run(
@@ -33,13 +34,27 @@ def _abort(msg: str) -> None:
     sys.exit(1)
 
 
+def _needs_sudo() -> bool:
+    if platform.system() == "Linux":
+        sock = Path("/var/run/docker.sock")
+        if sock.exists() and not os.access(sock, os.W_OK):
+            return True
+    return False
+
+
 def _check_docker() -> None:
+    global _USE_SUDO_FOR_DOCKER
     if not shutil.which("docker"):
         _abort(
             "Docker not found. Install Docker Desktop (Win/Mac) "
             "or Docker Engine (Linux)."
         )
-    result = _run(["docker", "info"], check=False, capture_output=True)
+    _USE_SUDO_FOR_DOCKER = _needs_sudo()
+    if _USE_SUDO_FOR_DOCKER:
+        _info("Using sudo for Docker commands (permission required).")
+
+    cmd = ["sudo", "docker", "info"] if _USE_SUDO_FOR_DOCKER else ["docker", "info"]
+    result = subprocess.run(cmd, stdout=subprocess.DEVNULL, check=False)
     if result.returncode != 0:
         _abort("Docker daemon is not running. Start Docker and retry.")
 
@@ -81,7 +96,10 @@ def _copy_env() -> None:
 
 def _start_infra() -> None:
     _info("Starting Postgres + Redis via Docker Compose...")
-    _run(["docker", "compose", "up", "-d", "--wait"])
+    cmd = ["docker", "compose", "up", "-d", "--wait"]
+    if _USE_SUDO_FOR_DOCKER:
+        cmd = ["sudo"] + cmd
+    _run(cmd)
     _info("Infrastructure is healthy.")
 
 
