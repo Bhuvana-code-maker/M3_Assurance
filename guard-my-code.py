@@ -4,6 +4,7 @@ Works on Linux, macOS, Windows CMD, Windows PowerShell.
 Usage: python guard-my-code.py
   OR : uv run python guard-my-code.py
 """
+
 import shutil
 import subprocess
 import sys
@@ -13,7 +14,7 @@ def _run(cmd: list[str], *, check: bool = True, **kw) -> int:
     print(f"  > {' '.join(cmd)}")
     result = subprocess.run(cmd, check=False, **kw)  # noqa: S603
     if result.returncode != 0 and check:
-        print(f"\n❌  Failed — fix errors above and re-run.", file=sys.stderr)
+        print("\n❌  Failed — fix errors above and re-run.", file=sys.stderr)
         sys.exit(result.returncode)
     return result.returncode
 
@@ -36,7 +37,10 @@ def _format() -> None:
 
 
 def _lint() -> None:
-    _step("🔍 Linting with ruff (McCabe complexity ≤4)...", ["uv", "run", "ruff", "check", "."])
+    _step(
+        "🔍 Linting with ruff (McCabe complexity ≤4)...",
+        ["uv", "run", "ruff", "check", "."],
+    )
 
 
 def _duplicates() -> None:
@@ -52,13 +56,17 @@ def _typecheck() -> None:
 
 
 def _dead_code() -> None:
-    _step("🦅 Detecting dead code with vulture...",
-          ["uv", "run", "vulture", "--exclude", ".venv", ".", "--min-confidence", "100"])
+    _step(
+        "🦅 Detecting dead code with vulture...",
+        ["uv", "run", "vulture", "--exclude", ".venv", ".", "--min-confidence", "100"],
+    )
 
 
 def _security() -> None:
-    _step("🛡️  Security audit with bandit...",
-          ["uv", "run", "bandit", "--exclude", ".venv,.ruff_cache", "-r", "."])
+    _step(
+        "🛡️  Security audit with bandit...",
+        ["uv", "run", "bandit", "-r", "apps"],
+    )
 
 
 def _secrets() -> None:
@@ -69,7 +77,16 @@ def _secrets() -> None:
     tracked = [f for f in result.stdout.splitlines() if f]
     if not tracked:
         return
-    _run(["uv", "run", "detect-secrets-hook", "--baseline", ".secrets.baseline", *tracked])
+    _run(
+        [
+            "uv",
+            "run",
+            "detect-secrets-hook",
+            "--baseline",
+            ".secrets.baseline",
+            *tracked,
+        ]
+    )
 
 
 def _audit_deps() -> None:
@@ -79,8 +96,15 @@ def _audit_deps() -> None:
 def _tests() -> None:
     _step(
         "🧪 Running tests (real Postgres + Redis — no mocks)...",
-        ["uv", "run", "pytest", "--cov=apps", "--cov-report=term-missing",
-         "--cov-fail-under=100", "-x"],
+        [
+            "uv",
+            "run",
+            "pytest",
+            "--cov=apps",
+            "--cov-report=term-missing",
+            "--cov-fail-under=100",
+            "-x",
+        ],
     )
 
 

@@ -1,5 +1,7 @@
 """Tests for gap_analyzer service."""
+
 import pytest
+
 from apps.gap_analyzer.main import app
 from apps.gap_analyzer.models import GapAnalysis, GapSummary
 from apps.gap_analyzer.prioritization import priority_label, sort_by_priority

@@ -1,10 +1,13 @@
 """Pydantic models for the Control Mapping service."""
+
 from pydantic import BaseModel, Field
 
 
 class ControlMappingRequest(BaseModel):
     verdict_id: str = Field(..., description="UUID of the Module 2 verdict")
-    framework_ids: list[str] = Field(..., description="List of applicable framework IDs")
+    framework_ids: list[str] = Field(
+        ..., description="List of applicable framework IDs"
+    )
     engagement_id: str = Field(..., description="Parent engagement identifier")
 
 

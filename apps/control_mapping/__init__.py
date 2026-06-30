@@ -1,5 +1,7 @@
 """Control Mapping service — maps MITRE ATT&CK techniques to regulatory controls."""
+
 from fastapi import FastAPI
+
 from apps.shared.cache import build_redis, check_redis
 from apps.shared.db import build_engine, check_db
 from apps.shared.settings import Settings

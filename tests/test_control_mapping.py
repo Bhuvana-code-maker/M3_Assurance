@@ -1,8 +1,14 @@
 """Tests for control_mapping service."""
+
 import pytest
+
 from apps.control_mapping.main import app
 from apps.control_mapping.mappers import coverage_pct, outcome_to_status
-from apps.control_mapping.models import ControlMappingRequest, ControlMappingResponse, ControlStatus
+from apps.control_mapping.models import (
+    ControlMappingRequest,
+    ControlMappingResponse,
+    ControlStatus,
+)
 from tests.conftest import make_client
 
 

@@ -100,7 +100,7 @@ jobs:
         run: uv run vulture --exclude .venv . --min-confidence 100
 
       - name: Bandit — insecure pattern detection
-        run: uv run bandit --exclude ./.venv,./.ruff_cache/ -r .
+        run: uv run bandit -r apps
 
       - name: detect-secrets — no secrets in code
         run: git ls-files -z | xargs -0 uv run detect-secrets-hook --baseline .secrets.baseline

@@ -1,5 +1,7 @@
 """Tests for evidence_aggregator service."""
+
 import pytest
+
 from apps.evidence_aggregator.chain_validator import completeness_pct, is_valid_sha256
 from apps.evidence_aggregator.main import app
 from apps.evidence_aggregator.models import EvidenceLink, EvidenceSummary

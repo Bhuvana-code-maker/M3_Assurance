@@ -1,4 +1,5 @@
 """Gap prioritisation helpers. Cyclomatic complexity ≤4."""
+
 from apps.gap_analyzer.models import GapAnalysis
 
 _PRIORITY_LABELS: dict[int, str] = {

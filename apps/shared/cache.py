@@ -1,10 +1,11 @@
 """Async Redis client builder."""
+
 from redis.asyncio import Redis
 
 
 def build_redis(url: str) -> Redis:
     """Create an async Redis client from a URL."""
-    return Redis.from_url(url, decode_responses=True)
+    return Redis.from_url(url, decode_responses=True)  # pyright: ignore[reportUnknownMemberType]
 
 
 async def check_redis(client: Redis) -> bool:

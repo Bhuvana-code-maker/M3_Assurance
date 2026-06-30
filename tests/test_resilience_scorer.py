@@ -1,5 +1,7 @@
 """Tests for resilience_scorer service."""
+
 import pytest
+
 from apps.resilience_scorer.calculator import composite_score, safe_pct, score_band
 from apps.resilience_scorer.main import app
 from apps.resilience_scorer.models import ResilienceScore, ScoreRequest

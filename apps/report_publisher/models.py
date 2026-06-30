@@ -1,4 +1,5 @@
 """Pydantic models for the Report Publisher service."""
+
 from pydantic import BaseModel, Field
 
 

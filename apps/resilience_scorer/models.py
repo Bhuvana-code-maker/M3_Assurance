@@ -1,4 +1,5 @@
 """Pydantic models for the Resilience Scorer service."""
+
 from pydantic import BaseModel, Field
 
 
@@ -14,4 +15,6 @@ class ResilienceScore(BaseModel):
     coverage_score: float = Field(..., ge=0.0, le=100.0)
     detection_score: float = Field(..., ge=0.0, le=100.0)
     evidence_score: float = Field(..., ge=0.0, le=100.0)
-    band: str = Field(..., description="Critical | At Risk | Moderate | Strong | Resilient")
+    band: str = Field(
+        ..., description="Critical | At Risk | Moderate | Strong | Resilient"
+    )

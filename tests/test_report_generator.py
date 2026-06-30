@@ -1,5 +1,7 @@
 """Tests for report_generator service."""
+
 import pytest
+
 from apps.report_generator.main import app
 from apps.report_generator.models import Report, ReportRequest
 from tests.conftest import make_client

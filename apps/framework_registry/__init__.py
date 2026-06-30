@@ -1,1 +1,1 @@
-"""Framework Registry service — stores regulatory framework definitions and control catalogs."""
+"""Framework Registry — stores framework definitions and control catalogs."""

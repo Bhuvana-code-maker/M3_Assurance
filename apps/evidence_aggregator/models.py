@@ -1,4 +1,5 @@
 """Pydantic models for the Evidence Aggregator service."""
+
 from pydantic import BaseModel, Field
 
 

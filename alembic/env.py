@@ -1,4 +1,5 @@
 """Alembic environment — supports async SQLAlchemy with DATABASE_URL env override."""
+
 import asyncio
 import os
 from logging.config import fileConfig
@@ -17,7 +18,9 @@ config.set_main_option("sqlalchemy.url", _url or "")
 
 def run_migrations_offline() -> None:
     """Run migrations without a live DB connection."""
-    context.configure(url=_url, literal_binds=True, dialect_opts={"paramstyle": "named"})
+    context.configure(
+        url=_url, literal_binds=True, dialect_opts={"paramstyle": "named"}
+    )
     with context.begin_transaction():
         context.run_migrations()
 

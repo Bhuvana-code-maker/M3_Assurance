@@ -1,1 +1,1 @@
-"""Report Publisher service — publishes reports as immutable events and handles delivery."""
+"""Report Publisher — publishes reports and handles delivery."""

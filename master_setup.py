@@ -3,6 +3,7 @@ master_setup.py — Cross-platform onboarding. Works on Linux, macOS, Windows.
 Prerequisites: Python 3.12+, Docker running.
 Usage: python master_setup.py
 """
+
 import os
 import platform
 import shutil
@@ -13,7 +14,9 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 
 
-def _run(cmd: list[str], *, check: bool = True, **kw) -> subprocess.CompletedProcess[str]:
+def _run(
+    cmd: list[str], *, check: bool = True, **kw
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(cmd, check=check, text=True, **kw)  # noqa: S603
 
 
@@ -32,7 +35,10 @@ def _abort(msg: str) -> None:
 
 def _check_docker() -> None:
     if not shutil.which("docker"):
-        _abort("Docker not found. Install Docker Desktop (Win/Mac) or Docker Engine (Linux).")
+        _abort(
+            "Docker not found. Install Docker Desktop (Win/Mac) "
+            "or Docker Engine (Linux)."
+        )
     result = _run(["docker", "info"], check=False, capture_output=True)
     if result.returncode != 0:
         _abort("Docker daemon is not running. Start Docker and retry.")
@@ -43,13 +49,22 @@ def _install_uv() -> None:
         return
     _warn("uv not found — installing...")
     if platform.system() == "Windows":
-        _run(["powershell", "-ExecutionPolicy", "ByPass", "-c",
-              "irm https://astral.sh/uv/install.ps1 | iex"])
+        _run(
+            [
+                "powershell",
+                "-ExecutionPolicy",
+                "ByPass",
+                "-c",
+                "irm https://astral.sh/uv/install.ps1 | iex",
+            ]
+        )
     else:
         _run(["sh", "-c", "curl -LsSf https://astral.sh/uv/install.sh | sh"])
     _add_uv_to_path()
     if not shutil.which("uv"):
-        _abort("uv install failed. See: https://docs.astral.sh/uv/getting-started/installation/")
+        _abort(
+            "uv install failed. See: https://docs.astral.sh/uv/getting-started/installation/"
+        )
 
 
 def _add_uv_to_path() -> None:
@@ -102,10 +117,15 @@ def _print_summary() -> None:
     _info("✅  Setup complete!")
     print()
     services = [
-        ("control_mapping", "10001"), ("evidence_aggregator", "10002"),
-        ("gap_analyzer", "10003"),    ("resilience_scorer", "10004"),
-        ("report_generator", "10005"), ("framework_registry", "10006"),
-        ("report_publisher", "10007"), ("postgres", "5432"), ("redis", "6379"),
+        ("control_mapping", "10001"),
+        ("evidence_aggregator", "10002"),
+        ("gap_analyzer", "10003"),
+        ("resilience_scorer", "10004"),
+        ("report_generator", "10005"),
+        ("framework_registry", "10006"),
+        ("report_publisher", "10007"),
+        ("postgres", "5432"),
+        ("redis", "6379"),
     ]
     print("  Service               Port")
     print("  ─────────────────     ──────")

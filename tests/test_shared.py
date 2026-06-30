@@ -1,9 +1,10 @@
 """Tests for apps/shared — settings, db, cache."""
+
 import pytest
+
 from apps.shared.cache import build_redis, check_redis
 from apps.shared.db import build_engine, check_db
 from apps.shared.settings import Settings
-from tests.conftest import _TEST_DB_URL, _REDIS_URL
 
 
 def test_settings_defaults():
@@ -27,14 +28,14 @@ def test_settings_ports_sequential():
 
 
 @pytest.mark.asyncio
-async def test_db_reachable():
-    engine = build_engine(_TEST_DB_URL)
+async def test_db_reachable(test_db_url: str):
+    engine = build_engine(test_db_url)
     assert await check_db(engine)
     await engine.dispose()
 
 
 @pytest.mark.asyncio
-async def test_redis_reachable():
-    client = build_redis(_REDIS_URL)
+async def test_redis_reachable(redis_url: str):
+    client = build_redis(redis_url)
     assert await check_redis(client)
     await client.aclose()

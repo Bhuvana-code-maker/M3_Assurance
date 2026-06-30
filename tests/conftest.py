@@ -1,12 +1,18 @@
 """pytest conftest — session-scoped real Postgres + Redis fixtures. No mocks."""
+
 import json
 import os
+from collections.abc import AsyncGenerator
 from pathlib import Path
+from typing import Any
 
 import pytest
 import pytest_asyncio
+from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
+from redis.asyncio import Redis
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from apps.shared.cache import build_redis
 from apps.shared.db import build_engine, build_session_factory
@@ -31,32 +37,35 @@ def redis_url() -> str:
 
 
 @pytest_asyncio.fixture(scope="session")
-async def db_engine(test_db_url: str):
+async def db_engine(test_db_url: str) -> AsyncGenerator[AsyncEngine, None]:
     engine = build_engine(test_db_url)
     yield engine
     await engine.dispose()
 
 
 @pytest_asyncio.fixture(scope="session")
-async def db_session_factory(db_engine):
+async def db_session_factory(
+    db_engine: AsyncEngine,
+) -> async_sessionmaker[AsyncSession]:
     return build_session_factory(db_engine)
 
 
 @pytest_asyncio.fixture(scope="session")
-async def redis_client(redis_url: str):
+async def redis_client(redis_url: str) -> AsyncGenerator[Redis, None]:
     client = build_redis(redis_url)
     yield client
     await client.aclose()
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
-async def seed_db(db_engine):
+async def seed_db(db_engine: AsyncEngine) -> None:
     """Load fixture JSON files into the test DB once per session."""
     async with db_engine.begin() as conn:
         for framework in _load("frameworks.json"):
             await conn.execute(
                 text(
-                    "INSERT INTO frameworks (framework_id, name, version, description, regions)"
+                    "INSERT INTO frameworks "
+                    "(framework_id, name, version, description, regions)"
                     " VALUES (:fid, :name, :ver, :desc, :regions)"
                     " ON CONFLICT (framework_id) DO NOTHING"
                 ),
@@ -71,7 +80,9 @@ async def seed_db(db_engine):
         for ctrl in _load("controls.json"):
             await conn.execute(
                 text(
-                    "INSERT INTO controls (control_id, framework_id, category, name, description, attack_mapping)"
+                    "INSERT INTO controls "
+                    "(control_id, framework_id, category, name, "
+                    "description, attack_mapping)"
                     " VALUES (:cid, :fid, :cat, :name, :desc, :atk)"
                     " ON CONFLICT (control_id) DO NOTHING"
                 ),
@@ -86,10 +97,10 @@ async def seed_db(db_engine):
             )
 
 
-def _load(filename: str) -> list[dict]:
-    return json.loads((_FIXTURES / filename).read_text())
+def _load(filename: str) -> list[dict[str, Any]]:
+    return json.loads((_FIXTURES / filename).read_text())  # type: ignore[no-any-return]
 
 
-def make_client(app) -> AsyncClient:
+def make_client(app: FastAPI) -> AsyncClient:
     """Create a test ASGI client for a FastAPI app (no running server needed)."""
     return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")

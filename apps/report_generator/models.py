@@ -1,4 +1,5 @@
 """Pydantic models for the Report Generator service."""
+
 from pydantic import BaseModel, Field
 
 

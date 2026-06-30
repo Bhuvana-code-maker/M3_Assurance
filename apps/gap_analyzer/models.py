@@ -1,4 +1,5 @@
 """Pydantic models for the Gap Analyzer service."""
+
 from pydantic import BaseModel, Field
 
 
@@ -6,7 +7,9 @@ class GapAnalysis(BaseModel):
     analysis_id: str
     engagement_id: str
     control_id: str
-    gap_type: str = Field(..., description="uncovered_control | missed_detection | evidence_gap")
+    gap_type: str = Field(
+        ..., description="uncovered_control | missed_detection | evidence_gap"
+    )
     priority: int = Field(..., ge=1, le=5, description="1=Critical … 5=Informational")
     remediation: str
 

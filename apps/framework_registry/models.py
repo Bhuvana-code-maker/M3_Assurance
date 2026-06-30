@@ -1,4 +1,5 @@
 """Pydantic models for the Framework Registry service."""
+
 from pydantic import BaseModel
 
 
