@@ -1,8 +1,7 @@
 """
 guard-my-code.py — Cross-platform quality gate. Mirrors CI exactly.
 Works on Linux, macOS, Windows CMD, Windows PowerShell.
-Usage: python guard-my-code.py
-  OR : uv run python guard-my-code.py
+Usage: uv run python guard-my-code.py
 """
 
 import os

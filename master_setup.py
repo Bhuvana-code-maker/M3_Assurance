@@ -150,7 +150,7 @@ def _print_summary() -> None:
     for name, port in services:
         print(f"  {name:<22}{port}")
     print()
-    print("  Run tests : python guard-my-code.py")
+    print("  Run tests : uv run python guard-my-code.py")
     print("  Start svc : uv run uvicorn apps.<svc>.main:app --port <port> --reload")
     print()
 
