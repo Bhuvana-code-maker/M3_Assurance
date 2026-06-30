@@ -43,10 +43,10 @@ jobs:
         run: uv lock --check
 
       - name: Ruff Format check
-        run: ruff format --check
+        run: uv run ruff format --check
 
       - name: Ruff Lint (McCabe ≤4 enforced)
-        run: ruff check .
+        run: uv run ruff check .
 
       - name: Duplicate detection
         run: npx --yes jscpd .
@@ -73,7 +73,7 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: Pyright strict type check
-        run: pyright
+        run: uv run pyright
 
   # ── Job 3: Security ──────────────────────────────────────────────────────────
   security:
@@ -97,16 +97,16 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: Vulture — dead code detection
-        run: vulture --exclude .venv . --min-confidence 100
+        run: uv run vulture --exclude .venv . --min-confidence 100
 
       - name: Bandit — insecure pattern detection
-        run: bandit --exclude ./.venv,./.ruff_cache/ -r .
+        run: uv run bandit --exclude ./.venv,./.ruff_cache/ -r .
 
       - name: detect-secrets — no secrets in code
-        run: git ls-files -z | xargs -0 detect-secrets-hook --baseline .secrets.baseline
+        run: git ls-files -z | xargs -0 uv run detect-secrets-hook --baseline .secrets.baseline
 
       - name: pip-audit — CVE scan
-        run: pip-audit .
+        run: uv run pip-audit .
 
   # ── Job 4: Tests (real Postgres + Redis — NO mocks) ─────────────────────────
   tests:
@@ -161,8 +161,18 @@ jobs:
 
       - name: Create test database
         run: |
-          PGPASSWORD=assurance psql -h localhost -U assurance -d assurance \
-            -c "SELECT 'CREATE DATABASE assurance_test' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'assurance_test')\gexec"
+          uv run python -c "
+          import asyncio, asyncpg
+          async def main():
+              conn = await asyncpg.connect('postgresql://assurance:assurance@localhost:5432/assurance')
+              try:
+                  await conn.execute('CREATE DATABASE assurance_test')
+              except asyncpg.exceptions.DuplicateDatabaseError:
+                  pass
+              finally:
+                  await conn.close()
+          asyncio.run(main())
+          "
 
       - name: Run Alembic migrations (main DB)
         run: uv run alembic upgrade head
@@ -171,4 +181,4 @@ jobs:
         run: DATABASE_URL=$DATABASE_TEST_URL uv run alembic upgrade head
 
       - name: Run tests with coverage (100% required)
-        run: pytest --cov=apps --cov-report=term-missing --cov-fail-under=100 -x
+        run: uv run pytest --cov=apps --cov-report=term-missing --cov-fail-under=100 -x
