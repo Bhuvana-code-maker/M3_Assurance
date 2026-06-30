@@ -1,0 +1,3 @@
+# Framework JSON definitions live here.
+# Naming convention: <framework_id>.json
+# e.g. nist_csf_2.0.json, iso_27001_2022.json, pci_dss_4.0.json

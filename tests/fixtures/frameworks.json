@@ -1,0 +1,37 @@
+[
+  {
+    "framework_id": "nist_csf_2.0",
+    "name": "NIST Cybersecurity Framework",
+    "version": "2.0",
+    "description": "NIST CSF 2.0 — six core functions: Govern, Identify, Protect, Detect, Respond, Recover.",
+    "regions": ["global", "us"]
+  },
+  {
+    "framework_id": "iso_27001_2022",
+    "name": "ISO/IEC 27001",
+    "version": "2022",
+    "description": "International standard for information security management systems (ISMS).",
+    "regions": ["global"]
+  },
+  {
+    "framework_id": "pci_dss_4.0",
+    "name": "PCI-DSS",
+    "version": "4.0",
+    "description": "Payment Card Industry Data Security Standard v4.0.",
+    "regions": ["global"]
+  },
+  {
+    "framework_id": "gdpr",
+    "name": "GDPR",
+    "version": "2016/679",
+    "description": "General Data Protection Regulation — EU personal data protection.",
+    "regions": ["eu", "global"]
+  },
+  {
+    "framework_id": "soc2_type2",
+    "name": "SOC 2 Type II",
+    "version": "2017",
+    "description": "Trust Services Criteria for SaaS and technology companies.",
+    "regions": ["us", "global"]
+  }
+]

@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+pip-wheel-metadata/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Pytest
+.pytest_cache/
+junit*.xml
+
+# Ruff
+.ruff_cache/
+
+# Pyright
+pyrightconfig.json
+
+# MyPy
+.mypy_cache/
+
+# Environment
+.env
+!.env.example
+
+# Secrets — baseline must be committed so CI can validate against it
+# .secrets.baseline   ← do NOT ignore this file
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker volumes (if accidentally created locally)
+postgres_data/
+
+# WeasyPrint generated reports
+*.pdf
+*.html
+
+# Alembic auto-generated
+alembic/__pycache__/

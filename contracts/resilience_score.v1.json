@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyart.io/m3/contracts/resilience_score.v1.json",
+  "title": "ResilienceScoreContract",
+  "version": "1.0",
+  "type": "object",
+  "required": ["score_id", "engagement_id", "composite_score", "coverage_score", "detection_score", "evidence_score", "band"],
+  "properties": {
+    "score_id": { "type": "string" },
+    "engagement_id": { "type": "string" },
+    "composite_score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "coverage_score":  { "type": "number", "minimum": 0, "maximum": 100 },
+    "detection_score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "evidence_score":  { "type": "number", "minimum": 0, "maximum": 100 },
+    "band": { "type": "string", "enum": ["Critical", "At Risk", "Moderate", "Strong", "Resilient"] }
+  }
+}

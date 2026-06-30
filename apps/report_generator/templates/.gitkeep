@@ -1,0 +1,3 @@
+# Report templates live here.
+# Each template is a Jinja2 / WeasyPrint HTML file.
+# Naming convention: <framework_id>_report.html

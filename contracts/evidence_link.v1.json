@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyart.io/m3/contracts/evidence_link.v1.json",
+  "title": "EvidenceLinkContract",
+  "version": "1.0",
+  "type": "object",
+  "required": ["link_id", "control_id", "verdict_id", "evidence_hash", "chain_position"],
+  "properties": {
+    "link_id": { "type": "string" },
+    "control_id": { "type": "string" },
+    "verdict_id": { "type": "string" },
+    "evidence_hash": { "type": "string", "minLength": 64, "maxLength": 64 },
+    "chain_position": { "type": "integer", "minimum": 0 }
+  }
+}

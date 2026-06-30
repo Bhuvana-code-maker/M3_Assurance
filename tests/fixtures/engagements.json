@@ -1,0 +1,16 @@
+[
+  {
+    "engagement_id": "eng-alpha-001",
+    "name": "Alpha Bank — Ransomware Detection Assessment",
+    "organization": "Alpha Bank Ltd",
+    "frameworks": ["nist_csf_2.0", "iso_27001_2022", "pci_dss_4.0"],
+    "created_at": "2026-06-01T09:00:00Z"
+  },
+  {
+    "engagement_id": "eng-beta-001",
+    "name": "Beta Health — HIPAA Compliance Assessment",
+    "organization": "Beta Healthcare Inc",
+    "frameworks": ["gdpr", "soc2_type2"],
+    "created_at": "2026-06-15T10:30:00Z"
+  }
+]

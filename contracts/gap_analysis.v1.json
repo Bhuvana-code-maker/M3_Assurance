@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyart.io/m3/contracts/gap_analysis.v1.json",
+  "title": "GapAnalysisContract",
+  "version": "1.0",
+  "type": "object",
+  "required": ["analysis_id", "engagement_id", "control_id", "gap_type", "priority", "remediation"],
+  "properties": {
+    "analysis_id": { "type": "string" },
+    "engagement_id": { "type": "string" },
+    "control_id": { "type": "string" },
+    "gap_type": { "type": "string", "enum": ["uncovered_control", "missed_detection", "evidence_gap"] },
+    "priority": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "remediation": { "type": "string" }
+  }
+}

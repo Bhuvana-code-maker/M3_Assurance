@@ -1,0 +1,82 @@
+[
+  {
+    "control_id": "DE.AE-02",
+    "framework_id": "nist_csf_2.0",
+    "category": "Detect",
+    "name": "Anomalies and Events Detection",
+    "description": "Potentially adverse events are analyzed to better characterize them.",
+    "attack_mapping": ["T1486", "T1490", "T1021", "T1059"]
+  },
+  {
+    "control_id": "DE.CM-01",
+    "framework_id": "nist_csf_2.0",
+    "category": "Detect",
+    "name": "Continuous Monitoring — Networks",
+    "description": "The network is monitored to detect potential cybersecurity events.",
+    "attack_mapping": ["T1078", "T1098", "T1537"]
+  },
+  {
+    "control_id": "RS.MI-01",
+    "framework_id": "nist_csf_2.0",
+    "category": "Respond",
+    "name": "Mitigation Implementation",
+    "description": "Incidents are contained.",
+    "attack_mapping": ["T1486", "T1490"]
+  },
+  {
+    "control_id": "ISO-8.7",
+    "framework_id": "iso_27001_2022",
+    "category": "Technological",
+    "name": "Protection Against Malware",
+    "description": "Protection against malware shall be implemented and supported by user awareness.",
+    "attack_mapping": ["T1486", "T1490", "T1059"]
+  },
+  {
+    "control_id": "ISO-8.16",
+    "framework_id": "iso_27001_2022",
+    "category": "Technological",
+    "name": "Monitoring Activities",
+    "description": "Networks, systems and applications shall be monitored for anomalous behaviour.",
+    "attack_mapping": ["T0831", "T0853", "T0867"]
+  },
+  {
+    "control_id": "PCI-5.2.1",
+    "framework_id": "pci_dss_4.0",
+    "category": "Requirement 5",
+    "name": "Malware Detection Mechanisms",
+    "description": "An anti-malware solution is deployed on all applicable system components.",
+    "attack_mapping": ["T1486", "T1490", "T1059"]
+  },
+  {
+    "control_id": "PCI-10.2",
+    "framework_id": "pci_dss_4.0",
+    "category": "Requirement 10",
+    "name": "Audit Trails",
+    "description": "Audit logs capture all individual user access to cardholder data.",
+    "attack_mapping": ["T1078", "T1098", "T1111"]
+  },
+  {
+    "control_id": "GDPR-Art32",
+    "framework_id": "gdpr",
+    "category": "Article 32",
+    "name": "Security of Processing",
+    "description": "Appropriate technical and organisational measures to ensure security.",
+    "attack_mapping": ["T1486", "T1078", "T1098"]
+  },
+  {
+    "control_id": "SOC2-CC7.2",
+    "framework_id": "soc2_type2",
+    "category": "CC7",
+    "name": "Monitoring of System Operations",
+    "description": "The entity monitors system components and the operation of those controls.",
+    "attack_mapping": ["T1486", "T1490", "T0831", "T0853"]
+  },
+  {
+    "control_id": "SOC2-CC6.1",
+    "framework_id": "soc2_type2",
+    "category": "CC6",
+    "name": "Logical Access Controls",
+    "description": "Logical access security software, infrastructure, and architectures restrict access.",
+    "attack_mapping": ["T1078", "T1098", "T1566", "T1111"]
+  }
+]

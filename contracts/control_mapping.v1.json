@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyart.io/m3/contracts/control_mapping.v1.json",
+  "title": "ControlMappingContract",
+  "version": "1.0",
+  "type": "object",
+  "required": ["engagement_id", "control_statuses", "coverage_pct", "framework_ids"],
+  "properties": {
+    "engagement_id": { "type": "string" },
+    "control_statuses": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "enum": ["Met", "Not Met", "Partial"] }
+    },
+    "coverage_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+    "framework_ids": { "type": "array", "items": { "type": "string" } }
+  }
+}

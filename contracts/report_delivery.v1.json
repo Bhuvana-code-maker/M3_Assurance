@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyart.io/m3/contracts/report_delivery.v1.json",
+  "title": "ReportDeliveryContract",
+  "version": "1.0",
+  "type": "object",
+  "required": ["delivery_id", "report_id", "channel", "recipient", "status"],
+  "properties": {
+    "delivery_id": { "type": "string" },
+    "report_id":   { "type": "string" },
+    "channel":     { "type": "string", "enum": ["email", "webhook", "download"] },
+    "recipient":   { "type": "string" },
+    "status":      { "type": "string", "enum": ["pending", "delivered", "failed"] }
+  }
+}

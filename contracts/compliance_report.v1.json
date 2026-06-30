@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyart.io/m3/contracts/compliance_report.v1.json",
+  "title": "ComplianceReportContract",
+  "version": "1.0",
+  "type": "object",
+  "required": ["report_id", "engagement_id", "framework_ids", "composite_score", "format", "content_hash"],
+  "properties": {
+    "report_id": { "type": "string" },
+    "engagement_id": { "type": "string" },
+    "framework_ids": { "type": "array", "items": { "type": "string" } },
+    "composite_score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "format": { "type": "string", "enum": ["pdf", "html"] },
+    "content_hash": { "type": "string", "minLength": 64, "maxLength": 64 }
+  }
+}

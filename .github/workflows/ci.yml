@@ -1,0 +1,174 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Cancel redundant runs on the same PR branch (free tier minute saver)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ── Job 1: Format & Lint (fastest — fail first) ─────────────────────────────
+  lint-format:
+    name: Format & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cache uv virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+          restore-keys: venv-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Check lockfile is up-to-date
+        run: uv lock --check
+
+      - name: Ruff Format check
+        run: ruff format --check
+
+      - name: Ruff Lint (McCabe ≤4 enforced)
+        run: ruff check .
+
+      - name: Duplicate detection
+        run: npx --yes jscpd .
+
+  # ── Job 2: Type Checking ─────────────────────────────────────────────────────
+  type-check:
+    name: Type Checking
+    runs-on: ubuntu-latest
+    needs: lint-format
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Cache uv virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+          restore-keys: venv-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Pyright strict type check
+        run: pyright
+
+  # ── Job 3: Security ──────────────────────────────────────────────────────────
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    needs: lint-format
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Cache uv virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+          restore-keys: venv-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Vulture — dead code detection
+        run: vulture --exclude .venv . --min-confidence 100
+
+      - name: Bandit — insecure pattern detection
+        run: bandit --exclude ./.venv,./.ruff_cache/ -r .
+
+      - name: detect-secrets — no secrets in code
+        run: git ls-files -z | xargs -0 detect-secrets-hook --baseline .secrets.baseline
+
+      - name: pip-audit — CVE scan
+        run: pip-audit .
+
+  # ── Job 4: Tests (real Postgres + Redis — NO mocks) ─────────────────────────
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: [type-check, security]
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: assurance
+          POSTGRES_PASSWORD: assurance
+          POSTGRES_DB: assurance
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U assurance -d assurance"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql+asyncpg://assurance:assurance@localhost:5432/assurance
+      DATABASE_TEST_URL: postgresql+asyncpg://assurance:assurance@localhost:5432/assurance_test
+      REDIS_URL: redis://localhost:6379/0
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Cache uv virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+          restore-keys: venv-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Create test database
+        run: |
+          PGPASSWORD=assurance psql -h localhost -U assurance -d assurance \
+            -c "SELECT 'CREATE DATABASE assurance_test' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'assurance_test')\gexec"
+
+      - name: Run Alembic migrations (main DB)
+        run: uv run alembic upgrade head
+
+      - name: Run Alembic migrations (test DB)
+        run: DATABASE_URL=$DATABASE_TEST_URL uv run alembic upgrade head
+
+      - name: Run tests with coverage (100% required)
+        run: pytest --cov=apps --cov-report=term-missing --cov-fail-under=100 -x
