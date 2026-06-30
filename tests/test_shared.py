@@ -3,7 +3,7 @@
 import pytest
 
 from apps.shared.cache import build_redis, check_redis
-from apps.shared.db import build_engine, check_db
+from apps.shared.db import build_engine, build_session_factory, check_db
 from apps.shared.settings import Settings
 
 
@@ -35,7 +35,27 @@ async def test_db_reachable(test_db_url: str):
 
 
 @pytest.mark.asyncio
+async def test_db_unreachable():
+    engine = build_engine("postgresql+asyncpg://localhost:9999/assurance")
+    assert await check_db(engine) is False
+    await engine.dispose()
+
+
+def test_build_session_factory(test_db_url: str):
+    engine = build_engine(test_db_url)
+    factory = build_session_factory(engine)
+    assert factory is not None
+
+
+@pytest.mark.asyncio
 async def test_redis_reachable(redis_url: str):
     client = build_redis(redis_url)
     assert await check_redis(client)
+    await client.aclose()
+
+
+@pytest.mark.asyncio
+async def test_redis_unreachable():
+    client = build_redis("redis://localhost:9999/0")
+    assert await check_redis(client) is False
     await client.aclose()

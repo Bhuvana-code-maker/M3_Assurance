@@ -10,7 +10,11 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 config = context.config
-fileConfig(config.config_file_name)  # type: ignore[arg-type]
+if config.config_file_name is not None:
+    try:
+        fileConfig(config.config_file_name)
+    except KeyError:
+        pass
 
 _url = os.environ.get("DATABASE_URL") or config.get_main_option("sqlalchemy.url")
 config.set_main_option("sqlalchemy.url", _url or "")

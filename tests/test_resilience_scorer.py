@@ -40,6 +40,7 @@ def test_score_band_strong():
 
 def test_score_band_resilient():
     assert score_band(100.0) == "Resilient"
+    assert score_band(105.0) == "Resilient"
 
 
 def test_composite_score_calculation():
