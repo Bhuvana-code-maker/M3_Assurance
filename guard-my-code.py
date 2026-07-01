@@ -5,6 +5,7 @@ Usage: uv run python guard-my-code.py
 """
 
 import os
+import platform
 import shutil
 import subprocess
 import sys
@@ -47,8 +48,11 @@ def _lint() -> None:
 
 def _duplicates() -> None:
     print("\n🧩 Detecting duplicate code...")
-    if shutil.which("npx"):
-        _run(["npx", "jscpd", "."])
+
+    npx = "npx.cmd" if platform.system() == "Windows" else "npx"
+
+    if shutil.which(npx):
+        _run([npx, "jscpd", "."])
     else:
         print("  ⚠️  npx not found — skipping (install Node.js to enable)")
 
