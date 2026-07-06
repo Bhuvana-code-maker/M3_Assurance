@@ -13,88 +13,54 @@ def multiply(num1: float, num2: float) -> float:
     return num1 * num2
 
 
-def divide(num1: float, num2: float):
+def divide(num1: float, num2: float) -> float:
     """
     Return the quotient of two numbers.
-    Raises ZeroDivisionError if num2 is zero, which is
-    handled by the caller.
+    Raises ZeroDivisionError if num2 is zero.
     """
     if num2 == 0:
-        raise ZeroDivisionError("Cannot divide by zero.")
+        raise ZeroDivisionError("Cannot divide by zero")
     return num1 / num2
 
 
-def get_number(prompt: str) -> float:
-    """
-    Prompt the user for a number and keep asking until a
-    valid float is entered.
-    """
-    while True:
-        value = input(prompt).strip()
-        try:
-            return float(value)
-        except ValueError:
-            print("Invalid input. Please enter a numeric value (e.g. 10 or 3.5).\n")
-
-
-def show_menu() -> None:
-    """Display the calculator's main menu."""
-    print("\n===== CLI Calculator =====")
-    print("1. Add")
-    print("2. Subtract")
-    print("3. Multiply")
-    print("4. Divide")
-    print("5. Exit")
-    print("===========================")
-
-
 def main() -> None:
-    """Main program loop that drives the calculator."""
-    # Map menu choices to their corresponding operation and symbol
+    """Run the calculator program."""
     operations = {
-        "1": ("Add", add, "+"),
-        "2": ("Subtract", subtract, "-"),
-        "3": ("Multiply", multiply, "*"),
-        "4": ("Divide", divide, "/"),
+        "1": ("+", add),
+        "2": ("-", subtract),
+        "3": ("*", multiply),
+        "4": ("/", divide),
     }
 
-    print("Welcome to the CLI Calculator!")
-
     while True:
-        show_menu()
-        choice = input("Enter choice: ").strip()
+        print("\nPython CLI Calculator")
+        print("1. Add")
+        print("2. Subtract")
+        print("3. Multiply")
+        print("4. Divide")
+        print("5. Exit")
 
-        # Exit condition
+        choice = input("Enter choice (1/2/3/4/5): ")
+
         if choice == "5":
-            print("\nThank you for using the CLI Calculator. Goodbye!\n")
+            print("Thank you for using Python CLI Calculator!")
             break
 
-        # Handle invalid menu choices gracefully
         if choice not in operations:
-            print("\nInvalid choice. Please select a number between 1 and 5.\n")
+            print("Invalid choice")
             continue
 
-        name, operation, symbol = operations[choice]
+        num1 = float(input("Enter first number: "))
+        num2 = float(input("Enter second number: "))
 
-        # Collect operands from the user
-        num1 = get_number("Enter first number: ")
-        num2 = get_number("Enter second number: ")
+        symbol, operation = operations[choice]
 
-        # Perform the calculation, handling division-by-zero errors
         try:
             result = operation(num1, num2)
+            print(f"{num1} {symbol} {num2} = {result}")
         except ZeroDivisionError as error:
-            print(f"\nError: {error}\n")
-            continue
-
-        # Display a clean, formatted result
-        print(f"\n{name}: {num1} {symbol} {num2}")
-        print(f"Result: {result}\n")
+            print(error)
 
 
-# Standard entry point guard so the script only runs when executed directly
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\n\nCalculator interrupted by user. Goodbye!\n")
+    main()
